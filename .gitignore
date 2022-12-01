@@ -1,0 +1,16 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+
+#credential
+credentials_dev
+
+#ssh_keys
+/ssh_key
+/ssh_key_generator
+
+#terraform modules folders
+/.terraform
+*.lock.hcl
+*.tfvars
+*.tfstate
