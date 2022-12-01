@@ -10,7 +10,8 @@ credentials_dev
 /ssh_key_generator
 
 #terraform modules folders
-*/Environment/*/.terraform/*
+**/.terraform
+*.json
 *.lock.hcl
 *.tfvars
 *.tfstate
