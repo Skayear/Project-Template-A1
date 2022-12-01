@@ -1,20 +1,20 @@
 
 resource "aws_subnet" "subnet" {
-  for_each = {for i, v in var.subnet_list:  i => v}
+  for_each = {for i, v in var.subnet_list:  i => v}       //bucle for each para iterar la lista de subredes (subnet_list)
 
-  vpc_id     = var.vpc_id
-  cidr_block = each.value.cidr_block
-  availability_zone =  format("%s%s", var.region,each.value.az) 
+  vpc_id     = var.vpc_id                   //id del vpc para generar las subredes
+  cidr_block = each.value.cidr_block        //rango de ips con su mascara de subred
+  availability_zone =  format("%s%s", var.region,each.value.az)     //availability zone de cada subred
 
-  map_public_ip_on_launch = var.privacy == "public" ? true : false
+  map_public_ip_on_launch = var.privacy == "public" ? true : false    //
 
   tags = {
-    Name = format("%s-%s-%s", var.subnet_name,each.value.az,var.env_name) 
+    Name = format("%s-%s-%s", var.subnet_name,each.value.az,var.env_name)  //tag name de la subred
   }
 }
 
 ##########################
-## Public subnet routing
+## Public subnet routing            // rute tables: Una tabla de rutas contiene un conjunto de reglas, denominadas rutas, que determinan hacia dónde se dirige el tráfico de red desde su subred o puerta de enlace
 ########################## 
 resource "aws_route_table" "route_table" {
   count = var.privacy == "public" ? 1 : 0
