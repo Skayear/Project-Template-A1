@@ -72,14 +72,14 @@ resource "aws_route_table" "private_route_table" {
 
   vpc_id = var.vpc_id 
 }
-/*
+
 resource "aws_route" "private_route" {
   count = var.privacy == "private" ? length(aws_subnet.subnet) : 0 
  
   route_table_id         = element([for route_table in aws_route_table.private_route_table : route_table.id], count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element([for nat in aws_nat_gateway.nat : nat.id], count.index)
-}*/
+  nat_gateway_id         = element([for nat in aws_nat_gateway.nat : nat.id], count.index)  ////Puede usar una puerta de enlace NAT para que las instancias en una subred privada puedan conectarse a servicios fuera de su VPC, pero los servicios externos no pueden iniciar una conexión con esas instancias.
+}
  
 resource "aws_route_table_association" "private_route_table_association" {
   count =  var.privacy == "private" ? length(aws_subnet.subnet) : 0 
@@ -108,7 +108,7 @@ resource "aws_route_table" "nat_public_route_table" {
   vpc_id = var.vpc_id 
 }
  
-resource "aws_route" "nat_public_route" {
+resource "aws_route" "nat_public_route" {         //las instancias en subredes privadas pueden conectarse a Internet a través de una puerta de enlace NAT pública, pero no pueden recibir conexiones entrantes no solicitadas desde Internet. Crea una puerta de enlace NAT pública en una subred pública y debe asociar una dirección IP elástica con la puerta de enlace NAT en el momento de la creación.
   count = var.privacy == "private" ? 1 : 0 
  
   route_table_id         = aws_route_table.nat_public_route_table.0.id

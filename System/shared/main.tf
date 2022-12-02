@@ -72,3 +72,48 @@ module "s3" {
 
   env_name = "${var.env_full_name}"
 }
+
+# module "RDS_networking" {
+#   source = "../../Modules/RDS_networking"
+    
+#   env_name = var.env_name
+#   vpc_id =  module.VPC.vpc_id 
+#   env_full_name = var.env_full_name 
+#   subnet_ids = module.public_subnets.subnet_ids
+#   ec2_sgs = module.autoscaling.ec2_security_group
+
+#   #migrator_runner = var.migrator_runner
+# }
+
+
+module "RDS" {
+  source = "../../Modules/RDS"
+
+  identifier              = var.rds_identifier
+  allocated_storage       = var.rds_allocated_storage
+  engine                  = var.rds_engine
+  engine_version          = var.rds_engine_version
+  instance_class          = var.rds_instance_class
+  multi_az                = var.rds_multi_az
+  database_name           = var.rds_database_name
+  database_username       = var.rds_database_username
+  database_password       = var.rds_database_password
+  subnet_ids              = module.public_subnets.subnet_ids
+  subnet_group_id         = module.RDS_networking.subnet_group_id
+  security_group_ids      = module.RDS_networking.security_group_ids
+  deletion_protection     = var.rds_deletion_protection
+  apply_immediately       = var.rds_apply_immediately
+  monitoring_interval     = var.rds_monitoring_interval
+  env_name                = var.env_name
+  publicly_accessible     = true
+  
+  storage_encrypted       = var.use_encryption
+  kms_key_id = var.use_encryption ? module.kms_key[0].kms_key_id : null
+}
+
+module "kms_key"{
+  source        = "../../Modules/kmsEncription"
+  
+  count = var.use_encryption ? 1 : 0
+  aws_kms_alias_name = var.aws_kms_alias_name
+}
