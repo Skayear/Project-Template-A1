@@ -1,13 +1,13 @@
 locals {
 
   // Shared configs
-  application_name = "test-template"
-  prefix           = "test-t"
-  env_name         = "dev"
-  account_id       = "292454637569"
+  application_name = var.application_name
+  prefix           = var.prefix
+  env_name         = var.env_name
+  account_id       = var.account_id
   ssh_bucket       = "test-terraform-states-templete"
   ssh_key          = "./../ssh_keys/dev"
-  region           = "us-east-2"
+  region           = var.region
 
   availability_zones = ["${var.region}a", "${var.region}b", "${var.region}a"]
   env_full_name      = "${local.prefix}-${local.env_name}"
@@ -46,6 +46,12 @@ locals {
   }]
 
   ##################
+  ## KMS
+  ##################
+  aws_kms_alias_name = "${local.application_name}-${local.env_name}"
+  use_encryption     = false
+
+  ##################
   ## S3 bucket
   ##################
   use_s3 = false
@@ -58,6 +64,24 @@ locals {
   runner_instance_name = "GitLab_runner_dev"
   runner_key_file      = "../../ssh_key/dev/runner_key.pub"
   runner_count         = 1
+
+  #################
+  ## RDS Config 
+  #################
+  cluster_identifier      = ""
+  rds_identifier          = "dbpportal-db-${local.env_name}"
+  rds_allocated_storage   = "20"
+  rds_engine              = var.rds_engine
+  rds_engine_version      = var.rds_engine_version
+  rds_instance_class      = var.rds_instance_class
+  rds_multi_az            = false
+  rds_database_name       = var.rds_database_name
+  rds_database_username   = var.rds_database_username
+  rds_database_password   = var.rds_database_password
+  rds_deletion_protection = false
+  rds_apply_immediately   = true
+  rds_storage_encrypted   = false
+  rds_monitoring_interval = 0
 
 }
 
@@ -98,4 +122,24 @@ module "shared" {
 
   //ssh_key_file = local.ssh_key_file_ecs
   //ssh_bucket = data.aws_s3_bucket.ssh_bucket
+
+  /*RDS*/
+
+  rds_identifier          = local.rds_identifier
+  rds_allocated_storage   = local.rds_allocated_storage
+  rds_engine              = local.rds_engine
+  rds_engine_version      = local.rds_engine_version
+  rds_instance_class      = local.rds_instance_class
+  rds_multi_az            = local.rds_multi_az
+  rds_database_name       = local.rds_database_name
+  rds_database_username   = local.rds_database_username
+  rds_database_password   = local.rds_database_password
+  rds_deletion_protection = local.rds_deletion_protection
+  rds_apply_immediately   = local.rds_apply_immediately
+  rds_storage_encrypted   = local.use_encryption
+  rds_monitoring_interval = local.rds_monitoring_interval
+
+  use_encryption     = local.use_encryption
+  aws_kms_alias_name = local.aws_kms_alias_name
+
 }
