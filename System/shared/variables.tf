@@ -32,9 +32,9 @@ variable "public_subnet_name" {
 
 variable "public_subnet_list" {
   type = list(object({
-        az = string
-        cidr_block= string
-    }))
+    az         = string
+    cidr_block = string
+  }))
 
 }
 
@@ -48,10 +48,10 @@ variable "private_subnet_name" {
 
 
 variable "private_subnet_list" {
-    type = list(object({
-        az = string
-        cidr_block= string
-    }))
+  type = list(object({
+    az         = string
+    cidr_block = string
+  }))
 
 }
 
@@ -63,16 +63,16 @@ variable "isolated_subnet_name" {
 }
 
 variable "isolated_subnet_list" {
-    type = list(object({
-        az = string
-        cidr_block= string
-    }))
+  type = list(object({
+    az         = string
+    cidr_block = string
+  }))
 
 }
 
 ############ S3 BUCKET ###########################################################
 
-variable "use_s3"{}
+variable "use_s3" {}
 
 ##################
 ## Runner Vars
@@ -105,7 +105,7 @@ variable "runner_count" {
 variable "rds_identifier" {
   description = "Identifier of database"
 }
- 
+
 variable "rds_allocated_storage" {
   default     = "20"
   description = "The storage size in GB"
@@ -158,10 +158,10 @@ variable "rds_apply_immediately" {
 
 variable "rds_monitoring_interval" {
   default = 0
-} 
+}
 
 
 ############ KMS KEY ############
 
-variable "use_encryption"{}
-variable "aws_kms_alias_name"{}
+variable "use_encryption" {}
+variable "aws_kms_alias_name" {}
